@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <style>
+        body {
+            position: relative;
+            min-height: 100vh;
+        }
+        footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <form id="quiz-form">
+        <h2>Adınız nedir?</h2>
+        <input type="text" name="username" required>
+
+        <h2>Soru 1: Bilgisayar görüşünde kullanılan aşağıdaki sinir ağı türü hangisidir?</h2>
+        <input type="radio" name="question1" value="convolutional neural network" required> Konvolüsyonel Sinir Ağı<br>
+        <input type="radio" name="question1" value="recurrent neural network"> Tekrarlayan Sinir Ağı<br>
+        <input type="radio" name="question1" value="feedforward neural network"> İleri Beslemeli Sinir Ağı<br>
+
+        <h2>Soru 2: Bir görüntüde nesneleri tanımak için ne kullanılır?</h2>
+        <input type="radio" name="question2" value="object detection" required> Nesne Tespiti<br>
+        <input type="radio" name="question2" value="image restoration"> Görüntü Onarımı<br>
+        <input type="radio" name="question2" value="edge detection"> Kenar Tespiti<br>
+
+        <h2>Soru 3: Görüntülerden ilgili özelliklerin çıkarılması hangi süreci içerir?</h2>
+        <input type="radio" name="question3" value="feature extraction" required> Özellik Çıkarımı<br>
+        <input type="radio" name="question3" value="feature suppression"> Özellik Baskılama<br>
+        <input type="radio" name="question3" value="feature augmentation"> Özellik Artırma<br>
+
+        <h2>Soru 4: Bir görüntüyü segmentlere bölmek için hangi teknik kullanılır?</h2>
+        <input type="radio" name="question4" value="image segmentation" required> Görüntü Bölütleme<br>
+        <input type="radio" name="question4" value="image filtering"> Görüntü Filtreleme<br>
+        <input type="radio" name="question4" value="image sharpening"> Görüntü Keskinleştirme<br>
+
+        <br>
+        <input type="button" value="Cevapları Gönder" onclick="submitQuiz()">
+    </form>
+
+    <div style="position: absolute; top: 10px; right: 10px;">
+        <p>Best Score: <span id="best-score">{{ best_score }}</span>%</p>
+    </div>
+
+    <div id="result"></div>
+
+    <footer>
+        Burak Tanrıverdi - 05/09/2024
+    </footer>
+
+    <script>
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = 'Your Score: ' + data.score + '% (' + data.name + ')';
+                
+                const currentBestScore = parseFloat(document.getElementById('best-score').textContent);
+                if (data.best_score > currentBestScore) {
+                    document.getElementById('best-score').textContent = data.best_score;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
